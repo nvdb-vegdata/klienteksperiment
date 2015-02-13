@@ -1,0 +1,38 @@
+
+@font-face {
+    font-family: "LFT Etica";
+    font-style: normal;
+    font-weight: normal;
+    src: url("../fonts/LFT_Etica_Reg.eot");
+    src: url("../fonts/LFT_Etica_Reg.eot?#iefix") format("embedded-opentype"), url("../fonts/LFT_Etica_Reg.woff") format("woff"), url("../fonts/LFT_Etica_Reg.ttf") format("truetype")
+}
+
+@font-face {
+    font-family: "LFT Etica";
+    font-style: normal;
+    font-weight: bold;
+    src: url("../fonts/LFT_Etica_Semibold.eot");
+    src: url("../fonts/LFT_Etica_Semibold.eot?#iefix") format("embedded-opentype"), url("../fonts/LFT_Etica_Semibold.woff") format("woff"), url("../fonts/LFT_Etica_Semibold.ttf") format("truetype")
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #444f55;
+    font-family: "LFT Etica","Lucida Sans Unicode","Lucida Grande",sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    line-height: 20px;
+    font-size: 15px;
+    overflow-x: hidden;
+}
+
+.navbar-brand {
+    padding-left: 40px;
+}
+
+#map {
+    height: 600px;
+    width: 1024px
+}
+
+
