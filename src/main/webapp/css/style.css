@@ -32,7 +32,12 @@ body {
 
 #map {
     height: 600px;
-    width: 1024px
+    width: 100%;
 }
 
-
+.bridge-form-header {
+    border-bottom: 1px solid darkgray;
+    margin-bottom: 20px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+}

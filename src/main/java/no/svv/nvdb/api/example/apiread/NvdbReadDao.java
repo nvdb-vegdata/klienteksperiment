@@ -3,6 +3,7 @@ package no.svv.nvdb.api.example.apiread;
 import no.svv.nvdb.api.example.apiread.data.SokeResultat;
 import no.svv.nvdb.api.example.representation.Bbox;
 import no.svv.nvdb.api.example.representation.Bridge;
+import org.glassfish.jersey.filter.LoggingFilter;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -28,11 +29,12 @@ public class NvdbReadDao {
         }
 
         Client client = ClientBuilder.newClient();
+        client.register(new LoggingFilter());
+
         String url = "https://www.vegvesen.no/nvdb/api";
         SokeResultat sokeResultat = client.target(url)
                 .path("sok")
                 .queryParam("kriterie", urlEncode(SOK.replace("BBOXSTRING", bboxString)))
-                .queryParam("select", urlEncode("objektId,objektTypeId,vegObjektLokasjon/geometriUtm33,navn"))
                 .request()
                 .accept("application/json")
                 .get(SokeResultat.class);
@@ -43,7 +45,7 @@ public class NvdbReadDao {
                 .findAny().get()                  // What if there are no bridges in this result set?
                 .getVegObjekter()
                 .stream()
-                .map(vo -> Transform.toBridge(vo.getLokasjon().getGeometriUtm33(), vo.getNavn()))
+                .map(vo -> Transform.toBridge(vo.getLokasjon().getGeometriUtm33(), vo.getEgenskaper()))
                 .collect(Collectors.toList());
 
         return bridges;

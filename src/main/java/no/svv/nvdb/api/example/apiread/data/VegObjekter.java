@@ -1,10 +1,19 @@
 package no.svv.nvdb.api.example.apiread.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class VegObjekter {
     private Lokasjon lokasjon;
     private Number objektId;
     private Number objektTypeId;
     private String navn;
+
+    private List<Egenskap> egenskaper;
 
     public Lokasjon getLokasjon() {
         return this.lokasjon;
@@ -36,5 +45,13 @@ public class VegObjekter {
 
     public void setNavn(String navn) {
         this.navn = navn;
+    }
+
+    public List<Egenskap> getEgenskaper() {
+        return egenskaper;
+    }
+
+    public void setEgenskaper(List<Egenskap> egenskaper) {
+        this.egenskaper = egenskaper;
     }
 }

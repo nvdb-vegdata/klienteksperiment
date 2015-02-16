@@ -1,6 +1,8 @@
 angular.module('map', ['leaflet', 'bridgeservice'])
     .controller('mapController', function($scope, leaflet, bridgeservice) {
 
+        $scope.selected;
+
         leaflet.drawMap();
 
 
@@ -8,7 +10,7 @@ angular.module('map', ['leaflet', 'bridgeservice'])
             var bounds = leaflet.getBounds();
             bridgeservice.readBridges(bounds).then(function (response) {
                 console.log('Drawing bridges ...');
-                leaflet.drawBridges(response.data);
+                leaflet.drawBridges(response.data, $scope);
             });
         }
 

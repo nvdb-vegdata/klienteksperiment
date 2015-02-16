@@ -1,5 +1,8 @@
 package no.svv.nvdb.api.example.apiread.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Lokasjon {
 
     private String geometriUtm33;

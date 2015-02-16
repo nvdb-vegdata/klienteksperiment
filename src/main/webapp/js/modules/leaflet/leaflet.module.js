@@ -61,7 +61,7 @@ angular.module('leaflet', [])
 
         }
 
-        function drawBridges (bridges) {
+        function drawBridges (bridges, $scope) {
 
             _bridgeLayer.clearLayers();
 
@@ -75,7 +75,8 @@ angular.module('leaflet', [])
                     var line = L.polyline(points, {color: 'blue'});
 
                     line.on('click', function() {
-                        alert('KLIKK');
+                        $scope.selected = bridge;
+                        $scope.$digest();
                     });
 
                     _bridgeLayer.addLayer(line);
