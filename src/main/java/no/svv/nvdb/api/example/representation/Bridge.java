@@ -9,12 +9,17 @@ import java.util.List;
  */
 public class Bridge {
 
+    private Number objektId;
     private String name;
 
     private List<Line> lines = new LinkedList<>();
 
-    public List<Line> getLines() {
-        return lines;
+    public Number getObjektId() {
+        return objektId;
+    }
+
+    public void setObjektId(Number objektId) {
+        this.objektId = objektId;
     }
 
     public String getName() {
@@ -24,4 +29,9 @@ public class Bridge {
     public void setName(String name) {
         this.name = name;
     }
+
+    public List<Line> getLines() {
+        return lines;
+    }
+
 }

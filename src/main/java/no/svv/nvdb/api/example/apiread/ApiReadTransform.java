@@ -1,6 +1,7 @@
 package no.svv.nvdb.api.example.apiread;
 
 import no.svv.nvdb.api.example.apiread.data.Egenskap;
+import no.svv.nvdb.api.example.apiread.data.VegObjekter;
 import no.svv.nvdb.api.example.representation.Bridge;
 import no.svv.nvdb.api.example.representation.Line;
 import no.svv.nvdb.api.example.representation.Point;
@@ -13,18 +14,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Transforms objects from the domain model used in API Read to this applications internal domain model.
+ * <p/>
  * User: Sigurd Stendal
  * Date: 13.02.15
  */
-public class Transform {
+public class ApiReadTransform {
 
-    public static Bridge toBridge(String geometriUtm33, List<Egenskap> egenskaper) {
+    public static Bridge toBridge(VegObjekter vegObjekt) {
 
         Bridge bridge = new Bridge();
-        bridge.getLines().addAll(toLines(geometriUtm33));
+        bridge.setObjektId(vegObjekt.getObjektId());
+        bridge.getLines().addAll(toLines(vegObjekt.getLokasjon().getGeometriUtm33()));
 
-        Optional<Egenskap> nameAttr = egenskaper.stream().filter(e -> e.getNavn().equals("Navn")).findAny();
-        if(nameAttr.isPresent()) {
+        Optional<Egenskap> nameAttr = vegObjekt.getEgenskaper().stream().filter(e -> e.getNavn().equals("Navn")).findAny();
+        if (nameAttr.isPresent()) {
             bridge.setName(nameAttr.get().getVerdi());
         }
 

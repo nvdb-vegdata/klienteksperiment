@@ -1,9 +1,8 @@
 angular.module('leaflet', [])
 
-    .factory('leaflet', function() {
+    .factory('leaflet', function () {
 
-        var _crs = new L.Proj.CRS('EPSG:25833',
-            '+proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs ',
+        var _crs = new L.Proj.CRS('EPSG:25833', '+proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs ',
             {
                 origin: [-2500000.0, 9045984.0],
                 resolutions: [
@@ -37,7 +36,6 @@ angular.module('leaflet', [])
 
         function drawMap() {
 
-
             var backgroundMap = new L.tileLayer('http://m{s}.nvdbcache.geodataonline.no/arcgis/rest/services/Trafikkportalen/GeocacheTrafikkJPG/MapServer/tile/{z}/{y}/{x}', {
                 maxZoom: 16,
                 minZoom: 0,
@@ -47,7 +45,7 @@ angular.module('leaflet', [])
             });
 
             _map.addLayer(backgroundMap);
-            _map.setView([63.43,10.40], 8);
+            _map.setView([63.43, 10.40], 8);
 
         }
 
@@ -61,28 +59,29 @@ angular.module('leaflet', [])
 
         }
 
-        function drawBridges (bridges, $scope) {
+        function drawBridges(bridges, $scope) {
 
             _bridgeLayer.clearLayers();
 
             bridges.forEach(function (bridge) {
                 bridge.lines.forEach(function (line) {
+
                     var points = [];
                     line.points.forEach(function (point) {
                         var p = _crs.projection.unproject(L.point(point.x, point.y));
                         points.push(p)
                     });
-                    var line = L.polyline(points, {color: 'blue'});
 
-                    line.on('click', function() {
+                    var polyline = L.polyline(points, {color: 'blue'});
+                    polyline.on('click', function () {
                         $scope.selected = bridge;
                         $scope.$digest();
                     });
-
-                    _bridgeLayer.addLayer(line);
+                    _bridgeLayer.addLayer(polyline);
 
                 });
             });
+
         }
 
 

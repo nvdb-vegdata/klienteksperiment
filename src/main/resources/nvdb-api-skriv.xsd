@@ -10,7 +10,7 @@
     <xs:complexType name="Jobb">
         <xs:all>
             <xs:element name="id" type="xs:string" minOccurs="0"/>
-            <xs:element name="registrer" type="tns:Registrering" minOccurs="0"/>
+            <xs:element name="oppdater" type="tns:Registrering" minOccurs="0"/>
             <xs:element name="oppdater" type="tns:Oppdatering" minOccurs="0"/>
             <xs:element name="korriger" type="tns:Korrigering" minOccurs="0"/>
             <xs:element name="slett" type="tns:Sletting" minOccurs="0"/>

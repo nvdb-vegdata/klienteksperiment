@@ -1,10 +1,9 @@
 angular.module('map', ['leaflet', 'bridgeservice'])
-    .controller('mapController', function($scope, leaflet, bridgeservice) {
+    .controller('mapController', function ($scope, leaflet, bridgeservice) {
 
         $scope.selected;
 
         leaflet.drawMap();
-
 
         function redrawBridges() {
             var bounds = leaflet.getBounds();
@@ -14,10 +13,21 @@ angular.module('map', ['leaflet', 'bridgeservice'])
             });
         }
 
-        leaflet.registerChangeListener(function() {
+        leaflet.registerChangeListener(function () {
             redrawBridges();
         });
 
         redrawBridges();
+
+        $scope.save = function () {
+            bridgeservice.updateBridge($scope.selected);
+        };
+
+        $scope.status = function () {
+            bridgeservice.checkStatus()
+                .then(function (response) {
+                    $scope.jobs = response.data;
+                });
+        };
 
     });
