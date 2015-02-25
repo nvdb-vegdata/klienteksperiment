@@ -9,13 +9,14 @@ angular.module('map', ['leaflet', 'bridgeservice'])
             var bounds = leaflet.getBounds();
             bridgeservice.readBridges(bounds).then(function (response) {
                 console.log('Drawing bridges ...');
-                leaflet.drawBridges(response.data, $scope);
+                leaflet.drawBridges(response.data, function (bridge) {
+                    $scope.selected = bridge;
+                    $scope.$digest();
+                });
             });
         }
 
-        leaflet.registerChangeListener(function () {
-            redrawBridges();
-        });
+        leaflet.registerChangeListener(redrawBridges);
 
         redrawBridges();
 
