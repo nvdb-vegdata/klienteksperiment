@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Jobb {
 
-    private static DateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
+    private static DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
 
     private Oppdater oppdater;
 
