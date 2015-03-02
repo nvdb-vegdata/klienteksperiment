@@ -1,14 +1,20 @@
 package no.svv.nvdb.api.example.apiwrite.data;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * User: Sigurd Stendal
  * Date: 16.02.15
  */
 public class Jobb {
 
+    private static DateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
+
     private Oppdater oppdater;
 
-    private String effektDato = "2013-10-29";
+    private String effektDato = dateformat.format(new Date());
 
     private String datakatalogversjon = "2.01";
 
