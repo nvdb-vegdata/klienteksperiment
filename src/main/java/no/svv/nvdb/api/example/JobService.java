@@ -1,6 +1,5 @@
 package no.svv.nvdb.api.example;
 
-import no.svv.nvdb.api.example.apiwrite.ApiWriteTransform;
 import no.svv.nvdb.api.example.apiwrite.NvdbWriteDao;
 import no.svv.nvdb.api.example.representation.Job;
 
@@ -25,15 +24,25 @@ public class JobService {
     @POST
     @Produces("application/json")
     @Consumes("application/json")
-    public Response getJobs() {
+    public Response getJob() {
 
         NvdbWriteDao nvdbWriteDao = new NvdbWriteDao();
 
-        List<Job> jobs = new LinkedList<>();
+        // Updates status of the job if present
+        if(JobRegister.instance.isPresent()) {
+            Job job = JobRegister.instance.get();
+            String id = job.getId();
+            String fremdrift = nvdbWriteDao.readStatus(id).getFremdrift();
+            job.setStatus(fremdrift);
+        }
 
-        JobRegister.instance.forEach(id -> jobs.add(ApiWriteTransform.toJob(id, nvdbWriteDao.readStatus(id))));
+        if(JobRegister.instance.isPresent()) {
+            return Response.ok().entity(JobRegister.instance.get()).build();
+        } else {
+            return Response.ok().build();
+        }
 
-        return Response.ok().entity(jobs).build();
+
     }
 
 }

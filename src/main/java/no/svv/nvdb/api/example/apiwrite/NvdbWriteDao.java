@@ -24,15 +24,19 @@ import java.util.regex.Pattern;
 public class NvdbWriteDao {
 
 
-    public String writeBridgeName(Bridge bridge) {
-
-        VegObjekter objektFromNvdb = new NvdbReadDao().readBridge(bridge.getObjektId());
-
-        VegObjekt objektToWrite = ApiWriteTransform.toVegObjekt(bridge, objektFromNvdb);
+    public String createJob(List<Bridge> bridges) {
 
         Jobb jobb = new Jobb();
         jobb.setOppdater(new Oppdater());
-        jobb.getOppdater().getVegObjekter().add(objektToWrite);
+
+        bridges.forEach(bridge -> {
+            VegObjekter objektFromNvdb = new NvdbReadDao().readBridge(bridge.getObjektId());
+
+            VegObjekt objektToWrite = ApiWriteTransform.toVegObjekt(bridge, objektFromNvdb);
+
+            jobb.getOppdater().getVegObjekter().add(objektToWrite);
+        });
+
 
         Client client = ClientBuilder.newClient();
         client.register(new LoggingFilter(Logger.getAnonymousLogger(), true));

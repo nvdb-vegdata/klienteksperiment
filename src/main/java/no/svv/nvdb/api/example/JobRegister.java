@@ -1,7 +1,10 @@
 package no.svv.nvdb.api.example;
 
+import no.svv.nvdb.api.example.representation.Job;
+
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A singleton with all job id's that is currently running on the API Write server and that we are interested in.
@@ -11,6 +14,6 @@ import java.util.List;
  */
 public class JobRegister {
 
-    public static List<String> instance = new LinkedList<>();
+    public static Optional<Job> instance = Optional.empty();
 
 }
