@@ -31,7 +31,7 @@ public class NvdbWriteDao {
         bridges.forEach(bridge -> {
             VegObjekter objektFromNvdb = new NvdbReadDao().readBridge(bridge.getObjektId());
 
-            VegObjekt2 objektToWrite = ApiWriteTransform.toVegObjekt(bridge, objektFromNvdb);
+            VegObjekt objektToWrite = ApiWriteTransform.toVegObjekt(bridge, objektFromNvdb);
 
             jobb.getOppdater().getVegObjekter().add(objektToWrite);
         });

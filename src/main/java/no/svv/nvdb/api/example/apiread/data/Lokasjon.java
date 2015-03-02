@@ -7,7 +7,7 @@ public class Lokasjon {
 
     private String geometriUtm33;
     private String bbox;
-    private Veglenker2 veglenker;
+    private Veglenker veglenker;
 
     public Lokasjon() {
     }
@@ -24,11 +24,11 @@ public class Lokasjon {
         this.geometriUtm33 = geometriUtm33;
     }
 
-    public Veglenker2 getVeglenker() {
+    public Veglenker getVeglenker() {
         return veglenker;
     }
 
-    public void setVeglenker(Veglenker2 veglenker) {
+    public void setVeglenker(Veglenker veglenker) {
         this.veglenker = veglenker;
     }
 

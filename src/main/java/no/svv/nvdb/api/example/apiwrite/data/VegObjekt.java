@@ -7,7 +7,7 @@ import java.util.List;
  * User: Sigurd Stendal
  * Date: 16.02.15
  */
-public class VegObjekt2 {
+public class VegObjekt {
 
     private Number typeId;
     private Number nvdbId;
@@ -16,7 +16,7 @@ public class VegObjekt2 {
 
     private List<Egenskap> egenskaper = new LinkedList<>();
 
-    public VegObjekt2(Number typeId, Number nvdbId) {
+    public VegObjekt(Number typeId, Number nvdbId) {
         this.typeId = typeId;
         this.nvdbId = nvdbId;
     }
