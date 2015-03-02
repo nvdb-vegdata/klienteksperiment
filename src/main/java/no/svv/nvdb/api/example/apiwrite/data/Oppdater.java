@@ -9,13 +9,13 @@ import java.util.List;
  */
 public class Oppdater {
 
-    List<VegObjekt> vegObjekter = new LinkedList<>();
+    List<VegObjekt2> vegObjekter = new LinkedList<>();
 
-    public List<VegObjekt> getVegObjekter() {
+    public List<VegObjekt2> getVegObjekter() {
         return vegObjekter;
     }
 
-    public void setVegObjekter(List<VegObjekt> vegObjekter) {
+    public void setVegObjekter(List<VegObjekt2> vegObjekter) {
         this.vegObjekter = vegObjekter;
     }
 }

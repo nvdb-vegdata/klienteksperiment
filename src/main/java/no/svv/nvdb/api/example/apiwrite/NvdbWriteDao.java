@@ -11,7 +11,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import java.util.Base64;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -32,7 +31,7 @@ public class NvdbWriteDao {
         bridges.forEach(bridge -> {
             VegObjekter objektFromNvdb = new NvdbReadDao().readBridge(bridge.getObjektId());
 
-            VegObjekt objektToWrite = ApiWriteTransform.toVegObjekt(bridge, objektFromNvdb);
+            VegObjekt2 objektToWrite = ApiWriteTransform.toVegObjekt(bridge, objektFromNvdb);
 
             jobb.getOppdater().getVegObjekter().add(objektToWrite);
         });
