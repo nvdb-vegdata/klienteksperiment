@@ -14,7 +14,7 @@ public class Config extends HashMap<String, String> {
 
     static {
         if (System.getProperty("POC") != null) {
-            instance.put("url.les", "http://svvunvdbpoc09.vegvesen.no:1337/nvdb-rest-api");
+            instance.put("url.les", "http://svvunvdbpoc10.vegvesen.no:1337/nvdb-rest-api");
             instance.put("url.skriv", "http://svvunvdbpoc09.vegvesen.no:9090/nvdb/apiskriv");
         } else {
             instance.put("url.les", "https://www.vegvesen.no/nvdb/api");
