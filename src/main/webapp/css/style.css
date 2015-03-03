@@ -48,4 +48,24 @@ body {
     width: 16px;
     float: right;
     margin-right: 30px;
-    margin-top: 16px;}
+    margin-top: 16px;
+}
+
+.btn, .dropdown-menu, .form-control, .input-group-addon, .pagination, .pagination>li:last-child>a, .pagination>li:first-child>a {
+    border-radius: 0;
+}
+
+.form-control:focus {
+    border-color: #ff9600;
+}
+
+.map-loader {
+    position:relative;
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.7);
+    left:0;
+    top:0;
+    z-index:2;
+}
+
