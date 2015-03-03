@@ -13,14 +13,25 @@ angular.module('map', ['leaflet', 'bridgeservice'])
 
             var bounds = leaflet.getBounds();
 
+            $scope.maploading=true;
             bridgeservice.readBridges(bounds).then(function (response) {
                 console.log('Drawing bridges ...');
                 leaflet.drawBridges(response.data, function (bridge) {
                     $scope.selected = bridge;
                     $scope.bridgeName = $scope.selected.name;
                     $scope.$digest();
+                    redrawSelectedBridges();
                 });
+                $scope.maploading=false;
+            }, function () {
+                $scope.maploading=true;
             });
+        }
+
+        function redrawSelectedBridges() {
+            var selected = $scope.job().bridges.slice();
+            selected.push($scope.selected);
+            leaflet.drawSelectedBridges(selected);
         }
 
         leaflet.registerChangeListener(redrawBridges);
@@ -34,6 +45,8 @@ angular.module('map', ['leaflet', 'bridgeservice'])
 
         $scope.submit = function () {
             bridgeservice.submitJob();
+            delete $scope.selected;
+            $scope.bridgeName = '';
         };
 
         $scope.status = function () {

@@ -33,6 +33,7 @@ angular.module('leaflet', [])
         });
 
         var _bridgeLayer = L.layerGroup([]).addTo(_map);
+        var _selectedBridgesLayer = L.layerGroup([]).addTo(_map);
 
         function drawMap() {
 
@@ -83,6 +84,25 @@ angular.module('leaflet', [])
 
         }
 
+        function drawSelectedBridges(bridges) {
+
+            _selectedBridgesLayer.clearLayers();
+
+            bridges.forEach(function (bridge) {
+                bridge.lines.forEach(function (line) {
+
+                    var points = [];
+                    line.points.forEach(function (point) {
+                        var p = _crs.projection.unproject(L.point(point.x, point.y));
+                        points.push(p)
+                    });
+
+                    _selectedBridgesLayer.addLayer(L.polyline(points, {color: 'red'}));
+
+                });
+            });
+
+        }
 
         function registerChangeListener(onChange) {
 
@@ -96,6 +116,7 @@ angular.module('leaflet', [])
             drawMap: drawMap,
             getBounds: getBounds,
             drawBridges: drawBridges,
+            drawSelectedBridges: drawSelectedBridges,
             registerChangeListener: registerChangeListener
 
         }
