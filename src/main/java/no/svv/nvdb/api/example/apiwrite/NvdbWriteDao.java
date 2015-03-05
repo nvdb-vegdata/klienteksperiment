@@ -2,6 +2,7 @@ package no.svv.nvdb.api.example.apiwrite;
 
 import no.svv.nvdb.api.example.Config;
 import no.svv.nvdb.api.example.apiread.NvdbReadDao;
+import no.svv.nvdb.api.example.apiread.data.Datakatalog;
 import no.svv.nvdb.api.example.apiread.data.VegObjekter;
 import no.svv.nvdb.api.example.apiwrite.data.*;
 import no.svv.nvdb.api.example.representation.Bridge;
@@ -25,16 +26,22 @@ public class NvdbWriteDao {
 
     public String createJob(List<Bridge> bridges) {
 
+        NvdbReadDao nvdbReadDao = new NvdbReadDao();
+
+        Datakatalog datakatalog = nvdbReadDao.readDatakatalog();
+
         Jobb jobb = new Jobb();
         jobb.setOppdater(new Oppdater());
+        jobb.setDatakatalogversjon(datakatalog.getVersion());
 
         bridges.forEach(bridge -> {
-            VegObjekter objektFromNvdb = new NvdbReadDao().readBridge(bridge.getObjektId());
+            VegObjekter objektFromNvdb = nvdbReadDao.readBridge(bridge.getObjektId());
 
             VegObjekt objektToWrite = ApiWriteTransform.toVegObjekt(bridge, objektFromNvdb);
 
             jobb.getOppdater().getVegObjekter().add(objektToWrite);
         });
+
 
 
         Client client = ClientBuilder.newClient();

@@ -24,10 +24,10 @@ public class NvdbReadDao {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    //private static final String SOK = "{\"lokasjon\":{\"bbox\":\"BBOXSTRING\"},\"objektTyper\":[{\"id\":60,\"antall\":99999999,\"filter\":[]}]}";
     private static final String DEFAULT_BBOX = "227203.4327098648, 7016350.6084574405, 313902.29281373497, 7067150.709044418";
 
-    private static final Sok SOK = new Sok(new Lokasjon(DEFAULT_BBOX), Arrays.asList(new ObjektType(60, 9999999L)));
+    private static final int OBJEKTTYPE_ID = 60;
+    private static final long MAX_ANTALL = 9999999L;
 
     /**
      * Reads all bridges in the bounding box
@@ -45,14 +45,14 @@ public class NvdbReadDao {
         String url = Config.instance.get("url.les");
         return client.target(url)
                 .path("sok")
-                .queryParam("kriterie", encodeParam(SOK))
+                .queryParam("kriterie", encodeParam(new Sok(new Lokasjon(bboxString), Arrays.asList(new ObjektType(OBJEKTTYPE_ID, MAX_ANTALL)))))
                 .request()
                 .accept("application/json")
                 .get(SokeResultat.class)
                 .getResultater()
                 .stream()
-                .filter(r -> r.getTypeId().equals(60))   // We are only interested in the result set with type id 60
-                .findAny().get()                         // We just assume that there is a result set with type id 60 since we asked for this
+                .filter(r -> r.getTypeId().equals(OBJEKTTYPE_ID))   // We are only interested in the result set with type id 60
+                .findAny().get()                                    // We just assume that there is a result set with type id 60 since we asked for this
                 .getVegObjekter();
     }
 
@@ -69,6 +69,22 @@ public class NvdbReadDao {
                 .request()
                 .accept("application/json")
                 .get(VegObjekter.class);
+
+    }
+
+    /**
+     * Reads the current version of the datakatalog
+     */
+    public Datakatalog readDatakatalog() {
+
+        Client client = ClientBuilder.newClient();
+        client.register(new LoggingFilter());
+
+        String url = Config.instance.get("url.les") + "/datakatalog/version";
+        return client.target(url)
+                .request()
+                .accept("application/json")
+                .get(Datakatalog.class);
 
     }
 

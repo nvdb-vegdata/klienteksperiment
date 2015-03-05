@@ -16,7 +16,7 @@ public class Jobb {
 
     private String effektDato = dateformat.format(new Date());
 
-    private String datakatalogversjon = "2.01";
+    private String datakatalogversjon;
 
     public Oppdater getOppdater() {
         return oppdater;
