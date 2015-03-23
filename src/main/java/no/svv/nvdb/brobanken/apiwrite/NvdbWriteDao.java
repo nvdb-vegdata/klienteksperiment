@@ -11,7 +11,6 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import java.util.Base64;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -23,8 +22,9 @@ import java.util.regex.Pattern;
  */
 public class NvdbWriteDao {
 
+    private LoginState loginState;
 
-    public String createJob(List<Bridge> bridges) {
+    public String createJob(List<Bridge> bridges, String username, String password) {
 
         NvdbReadDao nvdbReadDao = new NvdbReadDao();
 
@@ -42,7 +42,8 @@ public class NvdbWriteDao {
             jobb.getOppdater().getVegObjekter().add(objektToWrite);
         });
 
-
+        String ssoToken = getLoginState(username, password).getSsoToken();
+        String ssoCookieName = getLoginState(username, password).getSsoCookieName();
 
         Client client = ClientBuilder.newClient();
         client.register(new LoggingFilter(Logger.getAnonymousLogger(), true));
@@ -50,7 +51,7 @@ public class NvdbWriteDao {
         Ressurser ressurser = client.target(Config.instance.get("url.skriv") + "/api/jobber")
                 .request()
                 .accept("application/json")
-                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString("extscs:secret".getBytes()))
+                .cookie(ssoCookieName, ssoToken)
                 .post(Entity.json(jobb), Ressurser.class);
 
         String startUri = ressurser.getRessurser().stream().filter(r -> r.getRel().equals("start")).findAny().get().getSrc();
@@ -58,13 +59,16 @@ public class NvdbWriteDao {
         client.target(startUri)
                 .request()
                 .accept("application/json")
-                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString("extscs:secret".getBytes()))
+                .cookie(ssoCookieName, ssoToken)
                 .post(Entity.json(null), String.class);
 
         return extractJobId(startUri);
     }
 
-    public Status readStatus(String jobId) {
+    public Status readStatus(String jobId, String username, String password) {
+
+        String ssoToken = getLoginState(username, password).getSsoToken();
+        String ssoCookieName = getLoginState(username, password).getSsoCookieName();
 
         Client client = ClientBuilder.newClient();
         client.register(new LoggingFilter(Logger.getAnonymousLogger(), true));
@@ -73,7 +77,7 @@ public class NvdbWriteDao {
         return client.target(Config.instance.get("url.skriv") + "/api/jobber/" + jobId + "/status")
                 .request()
                 .accept("application/json")
-                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString("extscs:secret".getBytes()))
+                .cookie(ssoCookieName, ssoToken)
                 .get().readEntity(Status.class);
 
     }
@@ -86,6 +90,13 @@ public class NvdbWriteDao {
         } else {
             throw new IllegalArgumentException("Did not find a job id in th start uri: " + startUri);
         }
+    }
+
+    private LoginState getLoginState(String username, String password) {
+        if (loginState == null) {
+            loginState = new Authentication().login(username, password, Config.instance.get("url.loginserver"));
+        }
+        return loginState;
     }
 
 

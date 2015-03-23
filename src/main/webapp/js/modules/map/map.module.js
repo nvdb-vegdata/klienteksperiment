@@ -44,13 +44,13 @@ angular.module('map', ['leaflet', 'bridgeservice'])
         };
 
         $scope.submit = function () {
-            bridgeservice.submitJob();
+            bridgeservice.submitJob($scope.username, $scope.password);
             delete $scope.selected;
             $scope.bridgeName = '';
         };
 
         $scope.status = function () {
-            bridgeservice.checkStatus();
+            bridgeservice.checkStatus($scope.username, $scope.password);
         };
 
         $scope.reset = function() {

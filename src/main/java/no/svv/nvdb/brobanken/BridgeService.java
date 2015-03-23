@@ -42,25 +42,4 @@ public class BridgeService {
         return Response.ok().entity(bridges).build();
     }
 
-    @POST
-    @Consumes("application/json")
-    @Produces("application/json")
-    @Path("update")
-    public Response updateBridges(List<Bridge> bridges) {
-
-        Job job = new Job(null, null, bridges);
-
-        JobRegister.instance = Optional.of(job);
-
-        NvdbWriteDao dao = new NvdbWriteDao();
-
-        String jobId = dao.createJob(bridges);
-        job.setId(jobId);
-
-        Status status = dao.readStatus(jobId);
-        job.setStatus(status.getFremdrift());
-
-        return Response.ok().entity(job).build();
-    }
-
 }

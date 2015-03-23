@@ -28,7 +28,7 @@ angular.module('bridgeservice', [])
 
             },
 
-            submitJob: function () {
+            submitJob: function (username, password) {
 
                 if(_job.id) {
                     console.log('This job is already sent');
@@ -39,9 +39,13 @@ angular.module('bridgeservice', [])
 
                 return $http(
                     {
-                        url: 'r/bridge/update',
+                        url: 'r/job/create',
                         method: 'POST',
-                        headers: {Accept: 'application/json'},
+                        headers: {
+                            Accept: 'application/json',
+                            'X-username': username,
+                            'X-password': password
+                        },
                         data: bridgesToSend
                     }).then(function (response) {
                         _job = response.data;
@@ -57,7 +61,7 @@ angular.module('bridgeservice', [])
 
             },
 
-            checkStatus: function () {
+            checkStatus: function (username, password) {
 
                 if(!_job.id) return;
 
@@ -65,7 +69,11 @@ angular.module('bridgeservice', [])
                     {
                         url: 'r/job/',
                         method: 'POST',
-                        headers: {Accept: 'application/json'}
+                        headers: {
+                            Accept: 'application/json',
+                            'X-username': username,
+                            'X-password': password
+                        }
                     }).then(function (response) {
                         _job = response.data;
                         _job.lastStatusCheck = Date.now();
