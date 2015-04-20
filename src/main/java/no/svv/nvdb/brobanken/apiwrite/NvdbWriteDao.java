@@ -1,17 +1,12 @@
 package no.svv.nvdb.brobanken.apiwrite;
 
 import no.svv.nvdb.brobanken.Config;
-import no.svv.nvdb.brobanken.apiread.NvdbReadDao;
-import no.svv.nvdb.brobanken.apiread.data.Datakatalog;
-import no.svv.nvdb.brobanken.apiread.data.VegObjekter;
 import no.svv.nvdb.brobanken.apiwrite.data.*;
-import no.svv.nvdb.brobanken.representation.Bridge;
 import org.glassfish.jersey.filter.LoggingFilter;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,8 +21,8 @@ public class NvdbWriteDao {
 
     public String createJob(String username, String password, Jobb jobb) {
 
-        String ssoToken = getLoginState(username, password).getSsoToken();
-        String ssoCookieName = getLoginState(username, password).getSsoCookieName();
+        String ssoToken = login(username, password).getSsoToken();
+        String ssoCookieName = login(username, password).getSsoCookieName();
 
         Client client = ClientBuilder.newClient();
         client.register(new LoggingFilter(Logger.getAnonymousLogger(), true));
@@ -51,8 +46,8 @@ public class NvdbWriteDao {
 
     public Status readStatus(String jobId, String username, String password) {
 
-        String ssoToken = getLoginState(username, password).getSsoToken();
-        String ssoCookieName = getLoginState(username, password).getSsoCookieName();
+        String ssoToken = login(username, password).getSsoToken();
+        String ssoCookieName = login(username, password).getSsoCookieName();
 
         Client client = ClientBuilder.newClient();
         client.register(new LoggingFilter(Logger.getAnonymousLogger(), true));
@@ -76,7 +71,7 @@ public class NvdbWriteDao {
         }
     }
 
-    private LoginState getLoginState(String username, String password) {
+    private LoginState login(String username, String password) {
         if (loginState == null) {
             loginState = new Authentication().login(username, password, Config.instance.get("url.loginserver"));
         }
