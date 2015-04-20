@@ -1,7 +1,14 @@
 package no.svv.nvdb.brobanken;
 
+import no.svv.nvdb.brobanken.apiread.NvdbReadDao;
+import no.svv.nvdb.brobanken.apiread.data.Datakatalog;
+import no.svv.nvdb.brobanken.apiread.data.VegObjekter;
+import no.svv.nvdb.brobanken.apiwrite.ApiWriteTransform;
 import no.svv.nvdb.brobanken.apiwrite.NvdbWriteDao;
+import no.svv.nvdb.brobanken.apiwrite.data.Jobb;
+import no.svv.nvdb.brobanken.apiwrite.data.Oppdater;
 import no.svv.nvdb.brobanken.apiwrite.data.Status;
+import no.svv.nvdb.brobanken.apiwrite.data.VegObjekt;
 import no.svv.nvdb.brobanken.representation.Bridge;
 import no.svv.nvdb.brobanken.representation.Job;
 
@@ -53,9 +60,13 @@ public class JobService {
 
             JobRegister.instance = Optional.of(job);
 
-            NvdbWriteDao dao = new NvdbWriteDao();
+            NvdbReadDao nvdbReadDao = new NvdbReadDao();
+            Datakatalog datakatalog = nvdbReadDao.readDatakatalog();
 
-            String jobId = dao.createJob(bridges, username, password);
+            Jobb jobb = createNvdbWriteJobb(bridges, nvdbReadDao, datakatalog);
+
+            NvdbWriteDao dao = new NvdbWriteDao();
+            String jobId = dao.createJob(username, password, jobb);
             job.setId(jobId);
 
             Status status = dao.readStatus(jobId, username, password);
@@ -66,6 +77,21 @@ public class JobService {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    private Jobb createNvdbWriteJobb(List<Bridge> bridges, NvdbReadDao nvdbReadDao, Datakatalog datakatalog) {
+        Jobb jobb = new Jobb();
+        jobb.setOppdater(new Oppdater());
+        jobb.setDatakatalogversjon(datakatalog.getVersion());
+
+        bridges.forEach(bridge -> {
+            VegObjekter objektFromNvdb = nvdbReadDao.readBridge(bridge.getObjektId());
+
+            VegObjekt objektToWrite = ApiWriteTransform.toVegObjekt(bridge, objektFromNvdb);
+
+            jobb.getOppdater().getVegObjekter().add(objektToWrite);
+        });
+        return jobb;
     }
 
 }

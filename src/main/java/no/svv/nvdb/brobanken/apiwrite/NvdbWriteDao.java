@@ -24,23 +24,7 @@ public class NvdbWriteDao {
 
     private LoginState loginState;
 
-    public String createJob(List<Bridge> bridges, String username, String password) {
-
-        NvdbReadDao nvdbReadDao = new NvdbReadDao();
-
-        Datakatalog datakatalog = nvdbReadDao.readDatakatalog();
-
-        Jobb jobb = new Jobb();
-        jobb.setOppdater(new Oppdater());
-        jobb.setDatakatalogversjon(datakatalog.getVersion());
-
-        bridges.forEach(bridge -> {
-            VegObjekter objektFromNvdb = nvdbReadDao.readBridge(bridge.getObjektId());
-
-            VegObjekt objektToWrite = ApiWriteTransform.toVegObjekt(bridge, objektFromNvdb);
-
-            jobb.getOppdater().getVegObjekter().add(objektToWrite);
-        });
+    public String createJob(String username, String password, Jobb jobb) {
 
         String ssoToken = getLoginState(username, password).getSsoToken();
         String ssoCookieName = getLoginState(username, password).getSsoCookieName();
