@@ -34,26 +34,34 @@ public class NvdbReadDao {
      */
     public List<VegObjekter> readBridges(Bbox bbox) {
 
+        // Defines the bounding box
         String bboxString = DEFAULT_BBOX;
         if (bbox != null) {
             bboxString = bbox.getSouthWest().getX() + ", " + bbox.getSouthWest().getY() + ", " + bbox.getNorthEast().getX() + ", " + bbox.getNorthEast().getY();
         }
 
+        // Creates a REST client
         Client client = ClientBuilder.newClient();
         client.register(new LoggingFilter(Logger.getAnonymousLogger(), true));
 
+        // Calls API Read with the bounding box as parameter
         String url = Config.instance.get("url.les");
-        return client.target(url)
+        SokeResultat sokeResultat = client.target(url)
                 .path("sok")
                 .queryParam("kriterie", encodeParam(new Sok(new Lokasjon(bboxString), Arrays.asList(new ObjektType(OBJEKTTYPE_ID, MAX_ANTALL)))))
                 .request()
                 .accept("application/json")
-                .get(SokeResultat.class)
+                .get(SokeResultat.class);
+
+        // Extracts the list of bridges from the result
+        List<VegObjekter> vegObjekter = sokeResultat
                 .getResultater()
                 .stream()
                 .filter(r -> r.getTypeId().equals(OBJEKTTYPE_ID))   // We are only interested in the result set with type id 60
                 .findAny().get()                                    // We just assume that there is a result set with type id 60 since we asked for this
                 .getVegObjekter();
+
+        return vegObjekter;
     }
 
     /**
@@ -61,9 +69,12 @@ public class NvdbReadDao {
      */
     public VegObjekter readBridge(Number objektId) {
 
+        // Creates a REST client
         Client client = ClientBuilder.newClient();
         client.register(new LoggingFilter());
 
+        // Calls API Read with the bridge ID as parameter
+        // and extracts the bridge object from the result
         String url = Config.instance.get("url.les") + "/vegobjekter/objekt/" + objektId;
         return client.target(url)
                 .request()
@@ -77,9 +88,12 @@ public class NvdbReadDao {
      */
     public Datakatalog readDatakatalog() {
 
+        // Creates a REST client
         Client client = ClientBuilder.newClient();
         client.register(new LoggingFilter());
 
+        // Calls API Read with the bridge ID as parameter
+        // and extracts the datakatalog object from the result
         String url = Config.instance.get("url.les") + "/datakatalog/version";
         return client.target(url)
                 .request()

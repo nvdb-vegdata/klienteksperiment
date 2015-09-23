@@ -7,13 +7,17 @@ import java.util.List;
  * User: Sigurd Stendal
  * Date: 17.02.15
  */
-public class Job {
+public class ChangeSet {
 
     private String id;
     private String status;
     private List<Bridge> bridges = new LinkedList<>();
 
-    public Job(String id, String status, List<Bridge> bridges) {
+    public ChangeSet(List<Bridge> bridges) {
+        this(null, null, bridges);
+    }
+
+    public ChangeSet(String id, String status, List<Bridge> bridges) {
         this.id = id;
         this.status = status;
         this.bridges = bridges;

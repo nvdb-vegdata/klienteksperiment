@@ -3,12 +3,14 @@ angular.module('bridgeservice', [])
     .factory('bridgeservice', function ($http) {
 
 
-        var _job;
+        var _changeset;
+        var _statuslog;
 
         function reset () {
-            _job = {
+            _changeset = {
                 bridges: []
             };
+            _statuslog = [];
         }
         reset();
 
@@ -28,18 +30,18 @@ angular.module('bridgeservice', [])
 
             },
 
-            submitJob: function (username, password) {
+            submitChangeSet: function (username, password) {
 
-                if(_job.id) {
-                    console.log('This job is already sent');
+                if(_changeset.id) {
+                    console.log('This changeset is already sent');
                     return;
                 }
 
-                var bridgesToSend = _job.bridges;
+                var bridgesToSend = _changeset.bridges;
 
                 return $http(
                     {
-                        url: 'r/job/create',
+                        url: 'r/changeset/create',
                         method: 'POST',
                         headers: {
                             Accept: 'application/json',
@@ -48,42 +50,52 @@ angular.module('bridgeservice', [])
                         },
                         data: bridgesToSend
                     }).then(function (response) {
-                        _job = response.data;
-                        _job.lastStatusCheck = Date.now();
-                        return _job;
+                        _changeset = response.data;
+                        _statuslog = [{
+                            time: Date.now(),
+                            status: response.data.status
+                        }];
+                        return _changeset;
                     });
 
             },
 
             writeBridge: function (bridge) {
 
-                _job.bridges.push(bridge);
+                _changeset.bridges.push(bridge);
 
             },
 
             checkStatus: function (username, password) {
 
-                if(!_job.id) return;
+                if(!_changeset.id) return;
 
                 return $http(
                     {
-                        url: 'r/job/',
-                        method: 'POST',
+                        url: 'r/changeset/',
+                        method: 'GET',
                         headers: {
                             Accept: 'application/json',
                             'X-username': username,
                             'X-password': password
                         }
                     }).then(function (response) {
-                        _job = response.data;
-                        _job.lastStatusCheck = Date.now();
-                        return _job;
+                        _changeset = response.data;
+                        _statuslog.push({
+                            time: Date.now(),
+                            status: response.data.status
+                        });
+                        return _changeset;
                     });
 
             },
 
-            job: function () {
-                return _job;
+            changeset: function () {
+                return _changeset;
+            },
+
+            statuslog : function () {
+                return _statuslog;
             },
 
             reset: reset

@@ -8,7 +8,7 @@ import java.util.Date;
  * User: Sigurd Stendal
  * Date: 16.02.15
  */
-public class Jobb {
+public class Endringssett {
 
     private static DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
 

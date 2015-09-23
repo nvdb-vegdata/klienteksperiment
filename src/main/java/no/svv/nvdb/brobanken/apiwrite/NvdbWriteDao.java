@@ -19,7 +19,7 @@ public class NvdbWriteDao {
 
     private LoginState loginState;
 
-    public String createJob(String username, String password, Jobb jobb) {
+    public String createChangeset(String username, String password, Endringssett endringssett) {
 
         String ssoToken = login(username, password).getSsoToken();
         String ssoCookieName = login(username, password).getSsoCookieName();
@@ -27,11 +27,11 @@ public class NvdbWriteDao {
         Client client = ClientBuilder.newClient();
         client.register(new LoggingFilter(Logger.getAnonymousLogger(), true));
 
-        Ressurser ressurser = client.target(Config.instance.get("url.skriv") + "/api/jobber")
+        Ressurser ressurser = client.target(Config.instance.get("url.skriv") + "/endringssett")
                 .request()
                 .accept("application/json")
                 .cookie(ssoCookieName, ssoToken)
-                .post(Entity.json(jobb), Ressurser.class);
+                .post(Entity.json(endringssett), Ressurser.class);
 
         String startUri = ressurser.getRessurser().stream().filter(r -> r.getRel().equals("start")).findAny().get().getSrc();
 
@@ -41,10 +41,10 @@ public class NvdbWriteDao {
                 .cookie(ssoCookieName, ssoToken)
                 .post(Entity.json(null), String.class);
 
-        return extractJobId(startUri);
+        return extractChangeSetId(startUri);
     }
 
-    public Status readStatus(String jobId, String username, String password) {
+    public Status readStatus(String changeSetId, String username, String password) {
 
         String ssoToken = login(username, password).getSsoToken();
         String ssoCookieName = login(username, password).getSsoCookieName();
@@ -52,8 +52,8 @@ public class NvdbWriteDao {
         Client client = ClientBuilder.newClient();
         client.register(new LoggingFilter(Logger.getAnonymousLogger(), true));
 
-        System.out.println("Check status for job id: " + jobId);
-        return client.target(Config.instance.get("url.skriv") + "/api/jobber/" + jobId + "/status")
+        System.out.println("Check status for changeset id: " + changeSetId);
+        return client.target(Config.instance.get("url.skriv") + "/endringssett/" + changeSetId + "/status")
                 .request()
                 .accept("application/json")
                 .cookie(ssoCookieName, ssoToken)
@@ -61,13 +61,13 @@ public class NvdbWriteDao {
 
     }
 
-    private String extractJobId(String startUri) {
+    private String extractChangeSetId(String startUri) {
         Pattern pattern = Pattern.compile(".*/([^/]*)/start");
         Matcher m = pattern.matcher(startUri);
         if (m.matches()) {
             return m.group(1);
         } else {
-            throw new IllegalArgumentException("Did not find a job id in th start uri: " + startUri);
+            throw new IllegalArgumentException("Did not find a changeset id in th start uri: " + startUri);
         }
     }
 

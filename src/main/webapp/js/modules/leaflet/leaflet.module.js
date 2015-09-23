@@ -97,7 +97,7 @@ angular.module('leaflet', [])
                         points.push(p)
                     });
 
-                    _selectedBridgesLayer.addLayer(L.polyline(points, {color: 'red'}));
+                    _selectedBridgesLayer.addLayer(L.polyline(points, {weight: 10, color: 'red'}));
 
                 });
             });
