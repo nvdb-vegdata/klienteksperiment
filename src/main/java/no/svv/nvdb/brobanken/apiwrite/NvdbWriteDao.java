@@ -21,24 +21,28 @@ public class NvdbWriteDao {
 
     public String createChangeset(String username, String password, Endringssett endringssett) {
 
-        String ssoToken = login(username, password).getSsoToken();
-        String ssoCookieName = login(username, password).getSsoCookieName();
+        // Login on OpenAM
+        LoginState loginState = login(username, password);
 
+        // Creates a REST client
         Client client = ClientBuilder.newClient();
         client.register(new LoggingFilter(Logger.getAnonymousLogger(), true));
 
+        // Uploads / creates the changeset
         Ressurser ressurser = client.target(Config.instance.get("url.skriv") + "/endringssett")
                 .request()
                 .accept("application/json")
-                .cookie(ssoCookieName, ssoToken)
+                .cookie(loginState.getSsoCookieName(), loginState.getSsoToken())
                 .post(Entity.json(endringssett), Ressurser.class);
 
+        // Reads response and extracts the url to the endpoint for starting processing of a changeset
         String startUri = ressurser.getRessurser().stream().filter(r -> r.getRel().equals("start")).findAny().get().getSrc();
 
+        // Calls the endpoint to start processing the changeset
         client.target(startUri)
                 .request()
                 .accept("application/json")
-                .cookie(ssoCookieName, ssoToken)
+                .cookie(loginState.getSsoCookieName(), loginState.getSsoToken())
                 .post(Entity.json(null), String.class);
 
         return extractChangeSetId(startUri);
@@ -46,17 +50,18 @@ public class NvdbWriteDao {
 
     public Status readStatus(String changeSetId, String username, String password) {
 
-        String ssoToken = login(username, password).getSsoToken();
-        String ssoCookieName = login(username, password).getSsoCookieName();
+        // Login on OpenAM
+        LoginState loginState = login(username, password);
 
+        // Creates a REST client
         Client client = ClientBuilder.newClient();
         client.register(new LoggingFilter(Logger.getAnonymousLogger(), true));
 
-        System.out.println("Check status for changeset id: " + changeSetId);
+        // Calls the endpoint to get the current status for the changeset
         return client.target(Config.instance.get("url.skriv") + "/endringssett/" + changeSetId + "/status")
                 .request()
                 .accept("application/json")
-                .cookie(ssoCookieName, ssoToken)
+                .cookie(loginState.getSsoCookieName(), loginState.getSsoToken())
                 .get().readEntity(Status.class);
 
     }
